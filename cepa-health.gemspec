@@ -8,9 +8,10 @@ Gem::Specification.new do |gem|
   gem.version       = CepaHealth::VERSION
   gem.authors       = ["Jon Williams"]
   gem.email         = ["jon@jonathannen.com"]
-  gem.description   = %q{TODO: Write a gem description}
-  gem.summary       = %q{TODO: Write a gem summary}
-  gem.homepage      = ""
+  gem.description   = %q{Health Check Middleware for Rails and Rack-based Applications}
+  gem.summary       = %q{Provides the facility for probes that are evaluated when a health URL is accessed.}
+  gem.license       = "MIT"
+  gem.homepage      = "https://github.com/cepaorg/cepa-health"
 
   gem.files         = `git ls-files`.split($/)
   gem.executables   = gem.files.grep(%r{^bin/}).map{ |f| File.basename(f) }
