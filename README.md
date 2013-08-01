@@ -23,6 +23,10 @@ And then execute:
 
     $ bundle
 
+Equally you can install without a gemfile using:
+
+	$ gem install cepa-health
+
 ## Usage
 
 http://rubyonrails.org/
@@ -33,7 +37,7 @@ If you're running a Rails application, you can generate a default initializer wi
 This will create a file `config/initializers/cepa_health.rb`. Refer to that file for more instructions.
 
 Alternatively, if you're running a Rack-based application (e.g. using
-[Sinatra Framework](http://www.sinatrarb.com/)) add the following to config.ru.
+[Sinatra Framework](http://www.sinatrarb.com/)) add the following to config.ru. Note this assumes you're running with [Bundler](http://bundler.io/sinatra.html) or loading the cepa-health gem yourself.
 
     use CepaHealth::Middleware
 
@@ -51,7 +55,9 @@ To define probes, register blocks as:
    		true # Ultimate result
 	end
 	
-The result of these Probes is summarized at the `/healthy` path when you run your Rack application. This will render a HTML table, you can similarly use `/healthy.json` or `healthy.txt` for JSON and Text results respectively.
+The result of these Probes is summarized at the `/healthy` path when you run your Rack application. This will render a HTML table, you can similarly use `/healthy.json` or `healthy.txt` for JSON and Text results respectively. Take a look at the
+[probes directory](https://github.com/cepaorg/cepa-health/tree/master/probes) for
+some examples of probes.
 
 By default, `/healthy` will return all probes. You can cut this back using filters. For example, `healthy.txt?filters=warn` will return a Text summary of just the "warn" level Probes. `healthy.txt?filters=error,warn` resturns both "error" and "warn" probes.
 
@@ -61,7 +67,7 @@ You may not want your health check available to anyone - either because you want
 
 	CepaHealth.key = "sekret"
 
-The health check will only be available if `key=sekret` is added to the path. If it doesn't match, a 404 is returned.
+The health check will only be available if `key=sekret` is added to the path. If it doesn't match, a blank 404 is returned.
 
 This will prevent casual access to your health check.
 
@@ -74,6 +80,7 @@ There are already a handful of Rack and Rails-based Health Checks. For example,
 Cepa Health addresses a handful of specific needs:
 
 - Different levels of probes. The "error" is appropriate for removing a server from a Load Balancer and raising alarms. The "warn" level may be less serious, such as a failed Delayed Job. You way still wish to raise an alert, but perhaps of different severity.
+- Simiarly, there may be other needs for uptime reporting. In this case you may only wish to measure probes that directly affect site usage.
 - Cepa Health can be stubbed out by simply adding a blank `healthy.txt` to the root directory of the given path.
 
 

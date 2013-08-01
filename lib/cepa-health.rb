@@ -9,7 +9,7 @@ module CepaHealth
     attr_reader :records
 
     def execute(name, block)
-      @success &&= v = instance_exec(&block)
+      @success &&= !!(v = instance_exec(&block))
       record(name, v, v ? "Success" : "Failed")
     end
 
@@ -29,7 +29,12 @@ module CepaHealth
   end
 
   class << self
+    attr_accessor :key
     attr_reader :probes
+
+    def clear_probes!
+      @probes = {}
+    end
 
     # Executes the probes.
     # @param [ Array<String> ] filters to the given levels when the probes
@@ -64,6 +69,7 @@ module CepaHealth
 
   end
   @probes = {}
+  @key = nil
 
 end
 

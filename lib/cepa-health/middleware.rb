@@ -31,8 +31,14 @@ module CepaHealth
       query = env['QUERY_STRING']
       params = Rack::Utils.parse_nested_query(query)
       filters = params['filters']
-      result = CepaHealth.execute(*(filters || []))
+      filters = filters.nil? ? [] : filters.split(",").map { |v| v.strip }      
+      result = CepaHealth.execute(*filters)
       
+      unless CepaHealth.key.nil?
+        key = params['key']
+        return [404, {}, [""]] unless key == CepaHealth.key
+      end
+
       mime = determine_mime_type(path)
 
       body = case mime
