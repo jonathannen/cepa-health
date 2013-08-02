@@ -11,7 +11,7 @@ Gem::Specification.new do |gem|
   gem.description   = %q{Health Check Middleware for Rails and Rack-based Applications}
   gem.summary       = %q{Provides the facility for probes that are evaluated when a health URL is accessed.}
   gem.license       = "MIT"
-  gem.homepage      = "https://github.com/cepaorg/cepa-health"
+  gem.homepage      = "https://github.com/jonathannen/cepa-health"
 
   gem.files         = `git ls-files`.split($/)
   gem.executables   = gem.files.grep(%r{^bin/}).map{ |f| File.basename(f) }

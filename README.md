@@ -56,7 +56,7 @@ To define probes, register blocks as:
 	end
 	
 The result of these Probes is summarized at the `/healthy` path when you run your Rack application. This will render a HTML table, you can similarly use `/healthy.json` or `healthy.txt` for JSON and Text results respectively. Take a look at the
-[probes directory](https://github.com/cepaorg/cepa-health/tree/master/probes) for
+[probes directory](https://github.com/jonathannen/cepa-health/tree/master/probes) for
 some examples of probes.
 
 By default, `/healthy` will return all probes. You can cut this back using filters. For example, `healthy.txt?filters=warn` will return a Text summary of just the "warn" level Probes. `healthy.txt?filters=error,warn` resturns both "error" and "warn" probes.

@@ -9,7 +9,7 @@ module CepaHealth
       key = SecureRandom.hex(3)
       create_file "config/initializers/cepa_health.rb", <<-CONTENT
 # Configure Cepa Health checks.
-# See: https://github.com/cepaorg/cepa-health
+# See: https://github.com/jonathannen/cepa-health
 
 # # Comment out the following to remove the standard probes.
 CepaHealth.load_probes 
