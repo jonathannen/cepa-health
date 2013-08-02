@@ -60,7 +60,7 @@ module CepaHealth
     def render_html(result)
       rows = result.records.map do |name, status, comment|
         stat = status ? "<td class='status ok'>OK</td>" : "<td class='status fail'>FAIL</td>"
-        "<tr>#{stat}<td class='name'>#{CGI::escapeHTML(name)}</td><td>#{CGI::escapeHTML(comment)}</td></tr>"
+        "<tr>#{stat}<td class='name'>#{CGI::escapeHTML(name.to_s)}</td><td>#{CGI::escapeHTML(comment.to_s)}</td></tr>"
       end
       <<-HTML
 <!DOCTYPE html>

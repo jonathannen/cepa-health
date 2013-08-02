@@ -9,7 +9,8 @@ module CepaHealth
     attr_reader :records
 
     def execute(name, block)
-      @success &&= !!(v = instance_exec(&block))
+      v = !!instance_exec(&block)
+      @success = @success && v
       record(name, v, v ? "Success" : "Failed")
     end
 
@@ -19,6 +20,7 @@ module CepaHealth
     end
 
     def record(name, status, comment)
+      @success = @success && !!status
       @records << [name, status, comment]
     end
 
