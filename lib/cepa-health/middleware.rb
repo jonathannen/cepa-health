@@ -1,6 +1,7 @@
 # encoding: utf-8
 # Copyright © 2013 Jon Williams. See LICENSE.txt for details.
 require 'cgi'
+require 'json'
 
 module CepaHealth
 
@@ -42,6 +43,7 @@ module CepaHealth
       mime = determine_mime_type(path)
 
       body = case mime
+      when 'application/json' then render_json(result)
       when 'text/plain' then render_text(result)
       else render_html(result)
       end
@@ -112,6 +114,12 @@ module CepaHealth
   </body>
 </html>
       HTML
+    end
+
+    def render_json(result)
+      result.records.map do |name, status, comment|
+        { name: name, status: status, comment: comment }
+      end.to_json
     end
 
     def render_text(result)
