@@ -8,10 +8,9 @@ module CepaHealth
   class Result
     attr_reader :records
 
-    def execute(name, block)
-      v = !!instance_exec(&block)
-      @success = @success && v
-      record(name, v, v ? "Success" : "Failed")
+    def execute(block)
+      v = instance_exec(&block)
+      Array === v ? record(*v) : record("Probe", v, v ? "Success" : "Failed")
     end
 
     def initialize
@@ -21,7 +20,7 @@ module CepaHealth
 
     def record(name, status, comment)
       @success = @success && !!status
-      @records << [name, status, comment]
+      @records << [name.to_s, !!status, comment.to_s]
     end
 
     def success?
@@ -45,7 +44,7 @@ module CepaHealth
       result = CepaHealth::Result.new
       filters = filters.map { |v| v.to_s }
       selected = filters.empty? ? probes : probes.select { |k,v| filters.include?(k) } 
-      selected.values.flatten(1).each { |v| result.execute(*v) }
+      selected.values.flatten(1).each { |v| result.execute(v) }
       result
     end
 
@@ -63,9 +62,9 @@ module CepaHealth
 
     # Registers the given block as a probe. An optional level can be supplied,
     # which can be used as a filter.
-    def register(name, level = :error, &block)
+    def register(level = :error, &block)
       list = probes[level.to_s] ||= []
-      list << [name, block]
+      list << block
       self
     end
 

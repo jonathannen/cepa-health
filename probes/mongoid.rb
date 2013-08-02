@@ -3,7 +3,7 @@
 
 if defined?(Mongoid)
 
-  CepaHealth.register "Mongoid" do
+  CepaHealth.register do
     value = { 'ok' => nil }
     tries = 3
     begin
@@ -13,7 +13,8 @@ if defined?(Mongoid)
       tries -= 1
       retry unless tries <= 0
     end
-    value['ok'] == 1.0
+    
+    [ "Mongoid", value['ok'] == 1.0, "Ping Database"]
   end  
 
 end

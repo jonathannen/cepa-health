@@ -6,10 +6,9 @@ if defined?(ActiveRecord) && defined?(SQLite3)
   CepaHealth.register "SQLite" do
     begin
       ActiveRecord::Base.connection.exec_query("PRAGMA quick_check")
-      true
+      [ "SQLite", true, "Quick Check" ]
     rescue Exception => e
-      record("SQLite Failure", false, e.inspect)
-      false
+      [ "SQLite", false, e.inspect ]
     end
   end
 
