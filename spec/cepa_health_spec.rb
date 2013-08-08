@@ -14,17 +14,17 @@ describe CepaHealth do
 
   it "should register a failure on any unsuccessful probe" do
     standard_setup
-    CepaHealth.register("Fail") { false }
-    CepaHealth.register("Four") { true }
+    CepaHealth.register { ["Fail", false] }
+    CepaHealth.register { ["Four", true] }
     should_be(false, 6)
   end
 
   it "should allow the registration of probes in levels" do
-    CepaHealth.register("One") { false }
-    CepaHealth.register("Two", "error") { false }
-    CepaHealth.register("Three", "warn") { true }
-    CepaHealth.register("Four", "warn") { true }
-    CepaHealth.register("Five", "warn") { true }
+    CepaHealth.register { ["One", false] }
+    CepaHealth.register('error') { ["Two", false] }
+    CepaHealth.register('warn') { ["Three", true] }
+    CepaHealth.register('warn') { ["Four", true] }
+    CepaHealth.register('warn') { ["Five", true] }
     should_be(false, 5)
     should_be(false, 2, "error")
     should_be(true, 3, "warn")
@@ -41,9 +41,9 @@ describe CepaHealth do
   end
 
   def standard_setup
-    CepaHealth.register("One") { true }
-    CepaHealth.register("Two") { true }
-    CepaHealth.register("Three") { record("Three-B", true, "") }    
+    CepaHealth.register { ["One", true] }
+    CepaHealth.register { ["Two", true] }
+    CepaHealth.register { record("Three-B", true, ""); ["Three", true] }    
   end
 
 end

@@ -11,6 +11,9 @@ module CepaHealth
     def execute(block)
       v = instance_exec(&block)
       Array === v ? record(*v) : record("Probe", v, v ? "Success" : "Failed")
+    rescue Exception => e
+      $stderr.puts "#{e.class}: #{e.message}\n#{e.backtrace * "\n"}"
+      record("Probe Exception", false, "#{e.class}: #{e.message}")
     end
 
     def initialize
@@ -18,9 +21,9 @@ module CepaHealth
       @success = true
     end
 
-    def record(name, status, comment)
+    def record(name, status, comment = nil)
       @success = @success && !!status
-      @records << [name.to_s, !!status, comment.to_s]
+      @records << [name.to_s, !!status, (comment || "").to_s]
     end
 
     def success?
