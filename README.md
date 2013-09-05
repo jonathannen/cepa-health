@@ -8,7 +8,7 @@ any probe fails.
 
 This path is intended for use by services such as 
 [Pingdom](https://www.pingdom.com/) or [New Relic](http://newrelic.com/).
-This path is also for use with Load Balancer that use a health check, such as
+This path is also for use with Load Balancers that use a health check, such as
 Amazon's [Elastic Load Balancer](http://aws.amazon.com/elasticloadbalancing/).
 
 See Discussion before for more details on the use of Cepa Health.
@@ -44,30 +44,39 @@ Alternatively, if you're running a Rack-based application (e.g. using
 To define probes, register blocks as:
 	
 	# Create a Probe with the default level of "error"
-	CepaHealth.register "Probe Name" do
+	CepaHealth.register do
    		record("Other result", true, "This will add another reporting row")
-   		true # Ultimate result
+   		["My Error Probe", true, "Comment"] # Ultimate result of the probe
 	end
 
 	# Create a Probe specifically tagged as level "warn"
-	CepaHealth.register "Warning Probe", :warn do
+	CepaHealth.register :warn do
    		record("Other result", true, "This will add another reporting row")
-   		true # Ultimate result
+      ["My Warning Probe", true, "Comment"] # Ultimate result of the probe
 	end
 	
-The result of these Probes is summarized at the `/healthy` path when you run your Rack application. This will render a HTML table, you can similarly use `/healthy.json` or `healthy.txt` for JSON and Text results respectively. Take a look at the
-[probes directory](https://github.com/jonathannen/cepa-health/tree/master/probes) for
-some examples of probes.
+The result of these Probes is summarized at the `/healthy` path when you run 
+your Rack application. This will render a HTML table, you can similarly use 
+`/healthy.json` or `healthy.txt` for JSON and Text results respectively. Take 
+a look at the [probes directory](https://github.com/jonathannen/cepa-health/tree/master/probes) 
+for some examples of probes.
 
-By default, `/healthy` will return all probes. You can cut this back using filters. For example, `healthy.txt?filters=warn` will return a Text summary of just the "warn" level Probes. `healthy.txt?filters=error,warn` resturns both "error" and "warn" probes.
+By default, `/healthy` will return all probes. You can cut this back using 
+filters. For example, `healthy.txt?filters=warn` will return a Text summary 
+of just the "warn" level Probes. `healthy.txt?filters=error,warn` returns both
+"error" and "warn" probes.
 
 ## Privacy
 
-You may not want your health check available to anyone - either because you want to be private about the results, or you don't want to unnecessarily reveal details of your stack. To provide an extra layer of privacy, you can set a key on your health check. Just add (or comment out in the initalizer):
+You may not want your health check available to anyone - either because you
+want to be private about the results, or you don't want to unnecessarily reveal
+details of your stack. To provide an extra layer of privacy, you can set a key
+on your health check. Just add (or comment out in the initalizer):
 
 	CepaHealth.key = "sekret"
 
-The health check will only be available if `key=sekret` is added to the path. If it doesn't match, a blank 404 is returned.
+The health check will only be available if `key=sekret` is added to the path. 
+If it doesn't match, a blank 404 is returned.
 
 This will prevent casual access to your health check.
 
