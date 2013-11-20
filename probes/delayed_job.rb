@@ -8,13 +8,13 @@ if defined?(Delayed)
     record "Delayed Job Backlog", true, Delayed::Job.count
 
     # Detect if the DJ backend is ActiveRecord or Mongoid Based
-    type = case 
+    type = case
     when Delayed::Job.respond_to?(:order_by) then :mongoid
     when Delayed::Job.respond_to?(:order) then :active_record
     else nil
     end
 
-    # Maximum Delayed Job age is 10 minutes
+    # Maximum Delayed Job age is an hour
     unless type.nil?
       query = type == :active_record ? Delayed::Job.order("run_at DESC") : Delayed::Job.order_by(:run_at.desc)
       value = query.last
@@ -22,7 +22,7 @@ if defined?(Delayed)
         record 'Delayed Job Backlog Age', true, 'No expired jobs'
       else
         diff = (now - value.run_at)
-        record 'Delayed Job Backlog Age', diff < 600, "#{'%.1f' % (diff/60)} mins"
+        record 'Delayed Job Backlog Age', diff < 3600, "#{'%.1f' % (diff/60)} mins"
       end
     end
 
