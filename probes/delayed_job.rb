@@ -4,6 +4,7 @@
 if defined?(Delayed)
 
   CepaHealth.register :warn do
+    priority = ENV['MAX_PRIORITY'] || 10
     now = Time.now.utc
     record "Delayed Job Backlog", true, Delayed::Job.count
 
@@ -30,7 +31,11 @@ if defined?(Delayed)
     if type.nil?
       [ "Unknown Delayed Job Backend", false, "#{Delayed::Job}" ]
     else
-      failures = type == :active_record ? Delayed::Job.where('attempts > 0').count : Delayed::Job.where(:attempts.gt => 0).count
+      failures = if type == :active_record 
+        Delayed::Job.where("attempts > 0 AND priority < #{priority}").count 
+      else
+        Delayed::Job.where(:attempts.gt => 0, :priority.lt => priority).count
+      end
       ["Delayed Job Failures", failures == 0, "#{failures} failed job#{failures == 1 ? '' : 's'}"]
     end
   end
