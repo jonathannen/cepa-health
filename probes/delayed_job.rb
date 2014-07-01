@@ -31,12 +31,20 @@ if defined?(Delayed)
     if type.nil?
       [ "Unknown Delayed Job Backend", false, "#{Delayed::Job}" ]
     else
+
       failures = if type == :active_record 
         Delayed::Job.where("attempts > 0 AND priority < #{priority}").count 
       else
         Delayed::Job.where(:attempts.gt => 0, :priority.lt => priority).count
       end
-      ["Delayed Job Failures", failures == 0, "#{failures} failed job#{failures == 1 ? '' : 's'}"]
+      record "Delayed Job High Priority", failures == 0, "#{failures} failed job#{failures == 1 ? '' : 's'}"
+
+      low_priority_failures = if type == :active_record 
+        Delayed::Job.where("attempts > 0 AND priority >= #{priority}").count 
+      else
+        Delayed::Job.where(:attempts.gt => 0, :priority.gte => priority).count
+      end
+      ['Delayed Job Low Priority', true, "#{low_priority_failures} failed low priority job#{low_priority_failures == 1 ? '' : 's'}"]
     end
   end
 
