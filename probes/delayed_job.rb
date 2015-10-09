@@ -23,7 +23,7 @@ if defined?(Delayed)
         record 'Delayed Job Backlog Age', true, 'No expired jobs'
       else
         diff = (now - value.run_at)
-        record 'Delayed Job Backlog Age', diff < 3600, "#{'%.1f' % (diff/60)} mins"
+        record 'Delayed Job Backlog Age', true, "#{'%.1f' % (diff/60)} mins"
       end
     end
 
