@@ -4,7 +4,7 @@
 if defined?(Rails)
 
   # A Trivial Rails probe.
-  CepaHealth.register do
+  CepaHealth.register :rails do
     ["Rails Major Version", true, Rails::VERSION::MAJOR]
   end
 
