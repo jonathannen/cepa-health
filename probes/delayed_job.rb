@@ -3,7 +3,7 @@
 
 if defined?(Delayed)
 
-  CepaHealth.register :warn do
+  CepaHealth.register :delayed_job do
     priority = ENV['MAX_PRIORITY'] || 10
     now = Time.now.utc
     record "Delayed Job Backlog", true, Delayed::Job.count
@@ -23,7 +23,7 @@ if defined?(Delayed)
         record 'Delayed Job Backlog Age', true, 'No expired jobs'
       else
         diff = (now - value.run_at)
-        record 'Delayed Job Backlog Age', diff < 3600, "#{'%.1f' % (diff/60)} mins"
+        record 'Delayed Job Backlog Age', true, "#{'%.1f' % (diff/60)} mins"
       end
     end
 
@@ -32,15 +32,15 @@ if defined?(Delayed)
       [ "Unknown Delayed Job Backend", false, "#{Delayed::Job}" ]
     else
 
-      failures = if type == :active_record 
-        Delayed::Job.where("attempts > 0 AND priority < #{priority}").count 
+      failures = if type == :active_record
+        Delayed::Job.where("attempts > 0 AND priority < #{priority}").count
       else
         Delayed::Job.where(:attempts.gt => 0, :priority.lt => priority).count
       end
-      record "Delayed Job High Priority", failures == 0, "#{failures} failed job#{failures == 1 ? '' : 's'}"
+      record "Delayed Job High Priority", true, "#{failures} failed job#{failures == 1 ? '' : 's'}"
 
-      low_priority_failures = if type == :active_record 
-        Delayed::Job.where("attempts > 0 AND priority >= #{priority}").count 
+      low_priority_failures = if type == :active_record
+        Delayed::Job.where("attempts > 0 AND priority >= #{priority}").count
       else
         Delayed::Job.where(:attempts.gt => 0, :priority.gte => priority).count
       end
